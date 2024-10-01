@@ -1,26 +1,41 @@
 import React from "react";
-import TodoForm from "./TodoForm";
-import MainHeader from "./MainHeader";
-import TodoList from "./TodoList";
+import TodoForm from "./TodoForm.tsx";
+import MainHeader from "./MainHeader.tsx";
+import TodoList from "./TodoList.tsx";
+import { Todo, NewTodo, UpdateTodo, SelectedNavElement } from "../types/types";
 
-const Main = ({ todos, onSubmit, onDelete, selectedNavElement }) => {
+interface MainProps {
+  todos: Todo[];
+  onCreateProduct: (todo: NewTodo, callback?: () => void) => void;
+  onUpdateProduct: (todo: UpdateTodo, callback?: () => void) => void;
+  onDelete: (todoId: number) => void;
+  selectedNavElement: SelectedNavElement;
+}
+
+const Main = ({
+  todos,
+  onCreateProduct,
+  onUpdateProduct,
+  onDelete,
+  selectedNavElement,
+}: MainProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [editTodoId, setEditTodoId] = React.useState(null);
+  const [editTodoId, setEditTodoId] = React.useState<number | null>(null);
   const handleToggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  const handleMouseDown = (event) => {
+  const handleMouseDown = (event: React.SyntheticEvent) => {
     if (event.target === event.currentTarget) {
       handleToggleModal();
     }
   };
-  let editTodo = null;
+  let editTodo: Todo | null = null;
   if (editTodoId) {
-    editTodo = todos.find((todo) => todo.id === editTodoId);
+    editTodo = todos.find((todo) => todo.id === editTodoId)!;
   }
 
-  const handleCompleted = (todo, callback) => {
-    onSubmit({ id: todo.id, completed: todo.completed }, callback);
+  const handleCompleted = (todo: UpdateTodo, callback?: () => void) => {
+    onUpdateProduct({ id: todo.id, completed: todo.completed }, callback);
   };
   return (
     <main>
@@ -52,7 +67,8 @@ const Main = ({ todos, onSubmit, onDelete, selectedNavElement }) => {
             isEditTodo={!!editTodoId}
             editTodo={editTodo}
             onCompleted={handleCompleted}
-            onSubmit={onSubmit}
+            onCreateProduct={onCreateProduct}
+            onUpdateProduct={onUpdateProduct}
             onToggleModal={handleToggleModal}
           />
         </aside>

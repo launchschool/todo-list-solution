@@ -1,11 +1,24 @@
+import { GroupKey, DueDate, SelectedNavElement } from "../types/types";
+
+interface NavListItemProps {
+  dueDate: DueDate;
+  count: number;
+  setSelectedNavElement: React.Dispatch<
+    React.SetStateAction<SelectedNavElement>
+  >;
+  selectedNavElement: SelectedNavElement;
+  completed: boolean;
+}
+
 const NavListItem = ({
   dueDate,
   count,
   setSelectedNavElement,
   selectedNavElement,
   completed,
-}) => {
-  const groupKey = `${dueDate}|${completed}`;
+}: NavListItemProps) => {
+  const groupType = completed ? "completed" : "all";
+  const groupKey: GroupKey = `${dueDate}|${groupType}`;
   const isSelected = selectedNavElement.groupKey === groupKey;
   return (
     <li

@@ -1,4 +1,13 @@
 import { formatDueDate } from "../utils/utils";
+import { Todo, UpdateTodo } from "../types/types";
+
+interface TodoItemProps {
+  todo: Todo;
+  setEditTodoId: (id: number) => void;
+  onToggleModal: () => void;
+  onCompleted: (todo: UpdateTodo, callback?: () => void) => void;
+  onDelete: (todoId: number) => void;
+}
 
 const TodoItem = ({
   todo,
@@ -6,7 +15,7 @@ const TodoItem = ({
   onToggleModal,
   onCompleted,
   onDelete,
-}) => {
+}: TodoItemProps) => {
   const dueDate = formatDueDate(todo);
   return (
     <li

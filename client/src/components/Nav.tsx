@@ -1,7 +1,20 @@
-import NavListAll from "./NavListAll";
-import NavListCompleted from "./NavListCompleted";
+import NavListAll from "./NavListAll.tsx";
+import NavListCompleted from "./NavListCompleted.tsx";
+import { Todo, SelectedNavElement } from "../types/types";
 
-const Nav = ({ todos, selectedNavElement, setSelectedNavElement }) => {
+interface NavProps {
+  todos: Todo[];
+  selectedNavElement: SelectedNavElement;
+  setSelectedNavElement: React.Dispatch<
+    React.SetStateAction<SelectedNavElement>
+  >;
+}
+
+const Nav = ({
+  todos,
+  selectedNavElement,
+  setSelectedNavElement,
+}: NavProps) => {
   const completedTodos = todos.filter((todo) => todo.completed);
   return (
     <nav id="nav" aria-label="Todo lists">

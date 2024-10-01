@@ -1,3 +1,12 @@
+import {
+  Todo,
+  GroupKey,
+  NavTodo,
+  DueDate,
+  NumberMonth,
+  Year,
+} from "../types/types";
+
 export const MONTHS = [
   "January",
   "February",
@@ -11,17 +20,19 @@ export const MONTHS = [
   "October",
   "November",
   "December",
-];
+] as const;
 
-const getDateValue = (todo) => {
-  if (!todo.month && !todo.year) return -Infinity;
+export type Month = (typeof MONTHS)[number];
+
+const getDateValue = (todo: Todo): number => {
+  if (!todo.month || !todo.year) return -Infinity;
   const year = todo.year ? parseInt(todo.year) : new Date().getFullYear();
   const month = todo.month ? parseInt(todo.month) : 1;
   const day = todo.day ? parseInt(todo.day) : 1;
   return year * 10000 + month * 100 + day;
 };
 
-const sortTodosByDueDate = (todos) => {
+const sortTodosByDueDate = (todos: Todo[]): Todo[] => {
   return [...todos].sort((a, b) => {
     const dateA = getDateValue(a);
     const dateB = getDateValue(b);
@@ -29,70 +40,66 @@ const sortTodosByDueDate = (todos) => {
   });
 };
 
-export const formatDueDate = (todo) => {
+export const formatDueDate = (todo: Todo): DueDate => {
   if (!todo.month || !todo.year) return "No Due Date";
-  const month = todo.month.padStart(2, "0");
-  const year = todo.year.slice(-2);
+  const month = todo.month.padStart(2, "0") as NumberMonth;
+  const year = todo.year.slice(-2) as Year;
   return `${month}/${year}`;
 };
 
-export const groupAndCountTodosByDueDate = (todos) => {
+export const groupAndCountTodosByDueDate = (todos: Todo[]): NavTodo[] => {
   const sortedTodos = sortTodosByDueDate(todos);
-  const groupedTodos = sortedTodos.reduce((acc, todo) => {
-    const dueDate = formatDueDate(todo);
-
-    if (!acc[dueDate]) {
-      acc[dueDate] = { dueDate, count: 0 };
-    }
-
-    acc[dueDate].count++;
-
-    return acc;
-  }, {});
+  const groupedTodos = sortedTodos.reduce<Record<string, NavTodo>>(
+    (acc, todo) => {
+      const dueDate: DueDate = formatDueDate(todo);
+      if (!acc[dueDate]) {
+        acc[dueDate] = { dueDate, count: 0 };
+      }
+      acc[dueDate].count++;
+      return acc;
+    },
+    {}
+  );
   return Object.values(groupedTodos);
 };
 
-export const formatHeader = (selectedGroup) => {
-  switch (selectedGroup) {
-    case "all-todos":
-      return "All Todos";
-    case "completed":
-      return "Completed";
-    default:
-      const dueDate = selectedGroup.split("|")[0];
-      return dueDate;
+export const formatHeader = (selectedGroup: GroupKey): string => {
+  if (selectedGroup === "all-todos") {
+    return "All Todos";
   }
+  if (selectedGroup === "completed") {
+    return "Completed";
+  }
+  return selectedGroup.split("|")[0];
 };
 
-const hasNoDueDate = (todo) => !todo.month || !todo.year;
+const hasNoDueDate = (todo: Todo): boolean => !todo.month || !todo.year;
 
-const convertDueDate = (dueDate) => {
+const convertDueDate = (dueDate: string): [string, string] => {
   const [month, shortYear] = dueDate.split("/");
-
   const formattedYear = `20${shortYear}`;
-
   return [month, formattedYear];
 };
 
-export const filterTodosByNavElement = (todos, groupKey) => {
+export const filterTodosByNavElement = (
+  todos: Todo[],
+  groupKey: GroupKey
+): Todo[] => {
   if (groupKey === "all-todos") {
     return todos;
   }
-
   if (groupKey === "completed") {
     return todos.filter((todo) => todo.completed);
   }
-
-  const [dueDate, completed] = groupKey.split("|");
-
+  const [dueDate, type] = groupKey.split("|");
   return todos.filter((todo) => {
-    if (dueDate === "No Due Date" && completed === "true") {
+    if (dueDate === "No Due Date" && type === "completed") {
       return hasNoDueDate(todo) && todo.completed;
     } else if (dueDate === "No Due Date") {
       return hasNoDueDate(todo);
     } else {
       const [month, year] = convertDueDate(dueDate);
-      if (completed === "true") {
+      if (type === "completed") {
         return todo.month === month && todo.year === year && todo.completed;
       } else {
         return todo.month === month && todo.year === year;
@@ -101,7 +108,7 @@ export const filterTodosByNavElement = (todos, groupKey) => {
   });
 };
 
-export const monthToNumber = (monthName) => {
+export const monthToNumber = (monthName: Month | ""): string => {
   if (monthName === "") {
     return "00";
   }
@@ -109,11 +116,11 @@ export const monthToNumber = (monthName) => {
   return monthNumber.toString().padStart(2, "0");
 };
 
-export const numberToMonth = (monthNumber) => {
+export const numberToMonth = (monthNumber: string): Month | "" => {
   return MONTHS[parseInt(monthNumber) - 1] || "";
 };
 
-export const sortTodosByCompletion = (todos) => {
+export const sortTodosByCompletion = (todos: Todo[]): Todo[] => {
   return [...todos].sort((a, b) => {
     if (a.completed === b.completed) {
       return 0; // Keep original order if completion status is the same
@@ -122,7 +129,7 @@ export const sortTodosByCompletion = (todos) => {
   });
 };
 
-export const correctMonthandYear = (todo) => {
+export const correctMonthandYear = (todo: Todo): Todo => {
   if (todo.month === "00") {
     todo.month = "";
   } else if (todo.year === "0000") {
@@ -131,6 +138,6 @@ export const correctMonthandYear = (todo) => {
   return todo;
 };
 
-export const correctMonthandYearTodos = (todos) => {
+export const correctMonthandYearTodos = (todos: Todo[]): Todo[] => {
   return todos.map(correctMonthandYear);
 };

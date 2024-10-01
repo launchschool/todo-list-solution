@@ -1,9 +1,20 @@
+import { SelectedNavElement } from "../types/types";
+
+interface NavHeaderProps {
+  setSelectedNavElement: React.Dispatch<
+    React.SetStateAction<SelectedNavElement>
+  >;
+  todosLength: number;
+  isSelected: boolean;
+  text: "All Todos" | "Completed";
+}
+
 const NavHeader = ({
   setSelectedNavElement,
   todosLength,
   isSelected,
   text,
-}) => {
+}: NavHeaderProps) => {
   const groupKey = text === "All Todos" ? "all-todos" : "completed";
   return (
     <h2

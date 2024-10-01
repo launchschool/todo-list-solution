@@ -1,8 +1,21 @@
 import NavList from "./NavList";
 import { groupAndCountTodosByDueDate } from "../utils/utils";
 import NavHeader from "./NavHeader";
+import { Todo, SelectedNavElement } from "../types/types";
 
-const NavListAll = ({ todos, selectedNavElement, setSelectedNavElement }) => {
+interface NavListAllProps {
+  todos: Todo[];
+  selectedNavElement: SelectedNavElement;
+  setSelectedNavElement: React.Dispatch<
+    React.SetStateAction<SelectedNavElement>
+  >;
+}
+
+const NavListAll = ({
+  todos,
+  selectedNavElement,
+  setSelectedNavElement,
+}: NavListAllProps) => {
   const groupedTodos = groupAndCountTodosByDueDate(todos);
   const isSelected = selectedNavElement.groupKey === "all-todos";
   return (

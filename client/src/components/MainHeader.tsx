@@ -1,6 +1,11 @@
 import { formatHeader } from "../utils/utils";
+import { SelectedNavElement } from "../types/types";
 
-const MainHeader = ({ selectedNavElement }) => {
+interface MainHeaderProps {
+  selectedNavElement: SelectedNavElement;
+}
+
+const MainHeader = ({ selectedNavElement }: MainHeaderProps) => {
   const headerTitle = formatHeader(selectedNavElement.groupKey);
   return (
     <h1>

@@ -1,5 +1,15 @@
 import TodoItem from "./TodoItem";
 import { filterTodosByNavElement, sortTodosByCompletion } from "../utils/utils";
+import { SelectedNavElement, Todo, UpdateTodo } from "../types/types";
+
+interface TodoListProps {
+  todos: Todo[];
+  onToggleModal: () => void;
+  setEditTodoId: (id: number) => void;
+  onCompleted: (todo: UpdateTodo, callback?: () => void) => void;
+  onDelete: (todoId: number) => void;
+  selectedNavElement: SelectedNavElement;
+}
 
 const TodoList = ({
   todos,
@@ -8,7 +18,7 @@ const TodoList = ({
   onCompleted,
   onDelete,
   selectedNavElement,
-}) => {
+}: TodoListProps) => {
   todos = filterTodosByNavElement(todos, selectedNavElement.groupKey);
   return (
     <ul>
