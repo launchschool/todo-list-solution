@@ -1,5 +1,11 @@
 import React from "react";
-import { monthToNumber, numberToMonth, MONTHS } from "../utils/utils";
+import {
+  monthToNumber,
+  numberToMonth,
+  MONTHS,
+  removeLeadingZero,
+  formatDay,
+} from "../utils/utils";
 import { NewTodo, Todo, UpdateTodo } from "../types/types";
 import { Month } from "../utils/utils";
 
@@ -31,7 +37,7 @@ const TodoForm = ({
   const [formState, setFormState] = React.useState<FormState>({
     title: editTodo?.title ?? "",
     description: editTodo?.description ?? "",
-    day: editTodo?.day ?? "",
+    day: editTodo?.day ? removeLeadingZero(editTodo.day) : "",
     month: editTodo?.month ? numberToMonth(editTodo.month) : "",
     year: editTodo?.year ?? "",
   });
@@ -79,7 +85,7 @@ const TodoForm = ({
       ...(isEditTodo && editTodo ? { id: editTodo.id } : {}),
       title: formState.title,
       description: formState.description,
-      day: formState.day,
+      day: formatDay(formState.day),
       month: monthToNumber(formState.month),
       year: formState.year || "0000",
     };
@@ -90,7 +96,7 @@ const TodoForm = ({
       onCreateProduct(todoData as NewTodo, onToggleModal);
     }
   };
-
+  console.log(formState.day);
   return (
     <form action="#" method="post" id="modal" onSubmit={handleSubmit}>
       <fieldset>

@@ -123,21 +123,31 @@ export const numberToMonth = (monthNumber: string): Month | "" => {
 export const sortTodosByCompletion = (todos: Todo[]): Todo[] => {
   return [...todos].sort((a, b) => {
     if (a.completed === b.completed) {
-      return 0; // Keep original order if completion status is the same
+      return 0;
     }
-    return a.completed ? 1 : -1; // Move completed todos to the end
+    return a.completed ? 1 : -1;
   });
 };
 
-export const correctMonthandYear = (todo: Todo): Todo => {
+export const correctDate = (todo: Todo): Todo => {
+  if (todo.day === "00") {
+    todo.day = "";
+  }
   if (todo.month === "00") {
     todo.month = "";
-  } else if (todo.year === "0000") {
+  }
+  if (todo.year === "0000") {
     todo.year = "";
   }
   return todo;
 };
 
-export const correctMonthandYearTodos = (todos: Todo[]): Todo[] => {
-  return todos.map(correctMonthandYear);
+export const correctDateTodos = (todos: Todo[]): Todo[] => {
+  return todos.map(correctDate);
 };
+
+export const formatDay = (day: string): string => {
+  return day.padStart(2, "0");
+};
+
+export const removeLeadingZero = (day: string) => day.replace(/^0/, "");

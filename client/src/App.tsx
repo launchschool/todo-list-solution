@@ -2,12 +2,14 @@ import "./App.css";
 import React from "react";
 import Nav from "./components/Nav.tsx";
 import Main from "./components/Main.tsx";
-import axios from "axios";
-import {
-  correctMonthandYearTodos,
-  correctMonthandYear,
-} from "./utils/utils.ts";
+import { correctDate, correctDateTodos } from "./utils/utils.ts";
 import { Todo, NewTodo, UpdateTodo, SelectedNavElement } from "./types/types";
+import {
+  createTodo,
+  deleteTodo,
+  getTodos,
+  updateTodo,
+} from "./services/todos.ts";
 
 function App() {
   const [todos, setTodos] = React.useState<Todo[]>([]);
@@ -18,16 +20,16 @@ function App() {
     });
   React.useEffect(() => {
     const fetchTodos = async () => {
-      const { data } = await axios.get("/api/todos");
-      setTodos(correctMonthandYearTodos(data));
+      const data = await getTodos();
+      setTodos(correctDateTodos(data));
       setSelectedNavElement({ groupKey: "all-todos", count: data.length });
     };
     fetchTodos();
   }, []);
 
   const handleCreateProduct = async (todo: NewTodo, callback?: () => void) => {
-    const { data } = await axios.post("/api/todos", todo);
-    setTodos((prevState) => prevState.concat(data));
+    const data = await createTodo(todo);
+    setTodos((prevState) => prevState.concat(correctDate(data)));
     if (callback) {
       callback();
     }
@@ -37,12 +39,11 @@ function App() {
     todo: UpdateTodo,
     callback?: () => void
   ) => {
-    const { id, ...restOfTodo } = todo;
-    const { data } = await axios.put(`/api/todos/${id}`, restOfTodo);
+    const data = await updateTodo(todo);
     setTodos((prevState) => {
       return prevState.map((t) => {
-        if (t.id === id) {
-          return { ...correctMonthandYear(data) };
+        if (t.id === todo.id) {
+          return { ...correctDate(data) };
         } else {
           return t;
         }
@@ -52,9 +53,8 @@ function App() {
       callback();
     }
   };
-
   const handleDelete = async (todoId: number) => {
-    await axios.delete(`/api/todos/${todoId}`);
+    deleteTodo(todoId);
     setTodos((prevState) => prevState.filter((todo) => todo.id !== todoId));
   };
   return (

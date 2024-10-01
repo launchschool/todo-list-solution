@@ -1,4 +1,4 @@
-export interface BaseTodo {
+export interface Todo {
   id: number;
   title: string;
   description?: string;
@@ -8,12 +8,9 @@ export interface BaseTodo {
   completed?: boolean;
 }
 
-export type Todo = BaseTodo;
+export type NewTodo = Omit<Todo, "id" | "completed">;
 
-export type NewTodo = Omit<BaseTodo, "id" | "completed">;
-
-export type UpdateTodo = Required<Pick<BaseTodo, "id">> &
-  Partial<Omit<BaseTodo, "id">>;
+export type UpdateTodo = Pick<Todo, "id"> & Partial<Omit<Todo, "id">>;
 
 export interface NavTodo {
   dueDate: DueDate;
