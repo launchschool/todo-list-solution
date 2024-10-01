@@ -122,15 +122,28 @@ export const sortTodosByCompletion = (todos) => {
   });
 };
 
-export const correctMonthandYear = (todo) => {
+export const correctDate = (todo) => {
+  if (todo.day === "00") {
+    todo.day = "";
+  }
   if (todo.month === "00") {
     todo.month = "";
-  } else if (todo.year === "0000") {
+  }
+  if (todo.year === "0000") {
     todo.year = "";
   }
   return todo;
 };
 
-export const correctMonthandYearTodos = (todos) => {
-  return todos.map(correctMonthandYear);
+export const correctDateTodos = (todos) => {
+  return todos.map(correctDate);
+};
+
+export const formatDay = (day) => {
+  return day.padStart(2, "0");
+};
+
+export const removeLeadingZero = (day) => {
+  if (!day) return "";
+  return day.replace(/^0/, "");
 };

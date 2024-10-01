@@ -2,8 +2,8 @@ import "./App.css";
 import React from "react";
 import Nav from "./components/Nav";
 import Main from "./components/Main";
-import axios from "axios";
-import { correctMonthandYearTodos, correctMonthandYear } from "./utils/utils";
+import { correctDate, correctDateTodos } from "./utils/utils";
+import { getTodos, createTodo, updateTodo, deleteTodo } from "./services/todos";
 
 function App() {
   const [todos, setTodos] = React.useState([]);
@@ -13,37 +13,38 @@ function App() {
   });
   React.useEffect(() => {
     const fetchTodos = async () => {
-      const { data } = await axios.get("/api/todos");
-      setTodos(correctMonthandYearTodos(data));
+      const data = await getTodos();
+      setTodos(correctDateTodos(data));
       setSelectedNavElement({ groupKey: "all-todos", count: data.length });
     };
     fetchTodos();
   }, []);
-
-  const handleSubmit = async (todo, callback) => {
-    const { id, ...restOfTodo } = todo;
-    if (id) {
-      const { data } = await axios.put(`/api/todos/${id}`, restOfTodo);
-      setTodos((prevState) =>
-        prevState.map((t) => {
-          if (t.id === id) {
-            return { ...correctMonthandYear(data) };
-          } else {
-            return t;
-          }
-        })
-      );
-    } else {
-      const { data } = await axios.post("/api/todos", todo);
-      setTodos((prevState) => prevState.concat(data));
+  const handleCreateProduct = async (todo, callback) => {
+    const data = await createTodo(todo);
+    setTodos((prevState) => prevState.concat(correctDate(data)));
+    if (callback) {
+      callback();
     }
+  };
+
+  const handleUpdateProduct = async (todo, callback) => {
+    const data = await updateTodo(todo);
+    setTodos((prevState) =>
+      prevState.map((t) => {
+        if (t.id === todo.id) {
+          return { ...correctDate(data) };
+        } else {
+          return t;
+        }
+      })
+    );
     if (callback) {
       callback();
     }
   };
 
   const handleDelete = async (todoId) => {
-    await axios.delete(`/api/todos/${todoId}`);
+    await deleteTodo(todoId);
     setTodos((prevState) => prevState.filter((todo) => todo.id !== todoId));
   };
   return (
@@ -61,7 +62,8 @@ function App() {
       />
       <Main
         todos={todos}
-        onSubmit={handleSubmit}
+        onCreateProduct={handleCreateProduct}
+        onUpdateProduct={handleUpdateProduct}
         onDelete={handleDelete}
         selectedNavElement={selectedNavElement}
       />

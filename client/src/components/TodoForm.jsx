@@ -1,24 +1,31 @@
 import React from "react";
-import { monthToNumber, numberToMonth, MONTHS } from "../utils/utils";
+import {
+  monthToNumber,
+  numberToMonth,
+  MONTHS,
+  removeLeadingZero,
+  formatDay,
+} from "../utils/utils";
 const TodoForm = ({
   isEditTodo,
   editTodo,
-  onSubmit,
+  onCreateProduct,
+  onUpdateProduct,
   onCompleted,
   onToggleModal,
 }) => {
   const [title, setTitle] = React.useState(isEditTodo ? editTodo.title : "");
   const [description, setDescription] = React.useState(
-    isEditTodo ? editTodo.description : ""
+    editTodo ? editTodo.description : ""
   );
   const [selectedDay, setSelectedDay] = React.useState(
-    isEditTodo ? editTodo.day : ""
+    editTodo ? removeLeadingZero(editTodo.day) : ""
   );
   const [selectedMonth, setSelectedMonth] = React.useState(
-    isEditTodo ? numberToMonth(editTodo.month) : ""
+    editTodo ? numberToMonth(editTodo.month) : ""
   );
   const [selectedYear, setSelectedYear] = React.useState(
-    isEditTodo ? editTodo.year : ""
+    editTodo ? editTodo.year : ""
   );
   const [daysInMonth, setDaysInMonth] = React.useState([]);
 
@@ -27,7 +34,6 @@ const TodoForm = ({
   const isLeapYear = (year) => {
     return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   };
-
   const getDaysInMonth = (month, year) => {
     if (month === "February") {
       return isLeapYear(year) ? 29 : 28;
@@ -52,21 +58,21 @@ const TodoForm = ({
         id: editTodo.id,
         title,
         description,
-        day: selectedDay,
+        day: formatDay(selectedDay),
         month: monthToNumber(selectedMonth),
         year: selectedYear || "0000",
       };
+      onUpdateProduct(todoData, onToggleModal);
     } else {
       todoData = {
         title,
         ...(description && { description }),
-        ...(selectedDay && { day: selectedDay }),
+        ...(selectedDay && { day: formatDay(selectedDay) }),
         ...(selectedMonth && { month: monthToNumber(selectedMonth) }),
         ...(selectedYear && { year: selectedYear }),
       };
+      onCreateProduct(todoData, onToggleModal);
     }
-
-    onSubmit(todoData, onToggleModal);
   };
 
   const isDaySelectDisabled = !selectedMonth || !selectedYear;

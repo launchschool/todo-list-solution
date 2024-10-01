@@ -3,7 +3,13 @@ import TodoForm from "./TodoForm";
 import MainHeader from "./MainHeader";
 import TodoList from "./TodoList";
 
-const Main = ({ todos, onSubmit, onDelete, selectedNavElement }) => {
+const Main = ({
+  todos,
+  onCreateProduct,
+  onUpdateProduct,
+  onDelete,
+  selectedNavElement,
+}) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editTodoId, setEditTodoId] = React.useState(null);
   const handleToggleModal = () => {
@@ -20,7 +26,7 @@ const Main = ({ todos, onSubmit, onDelete, selectedNavElement }) => {
   }
 
   const handleCompleted = (todo, callback) => {
-    onSubmit({ id: todo.id, completed: todo.completed }, callback);
+    onUpdateProduct({ id: todo.id, completed: todo.completed }, callback);
   };
   return (
     <main>
@@ -52,7 +58,8 @@ const Main = ({ todos, onSubmit, onDelete, selectedNavElement }) => {
             isEditTodo={!!editTodoId}
             editTodo={editTodo}
             onCompleted={handleCompleted}
-            onSubmit={onSubmit}
+            onCreateProduct={onCreateProduct}
+            onUpdateProduct={onUpdateProduct}
             onToggleModal={handleToggleModal}
           />
         </aside>
