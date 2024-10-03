@@ -96,7 +96,6 @@ const TodoForm = ({
       onCreateProduct(todoData as NewTodo, onToggleModal);
     }
   };
-  console.log(formState.day);
   return (
     <form action="#" method="post" id="modal" onSubmit={handleSubmit}>
       <fieldset>
