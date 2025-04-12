@@ -6,16 +6,16 @@ import { Todo, NewTodo, UpdateTodo, SelectedNavElement } from "../types/types";
 
 interface MainProps {
   todos: Todo[];
-  onCreateProduct: (todo: NewTodo, callback?: () => void) => void;
-  onUpdateProduct: (todo: UpdateTodo, callback?: () => void) => void;
+  onCreateTodo: (todo: NewTodo, callback?: () => void) => void;
+  onUpdateTodo: (todo: UpdateTodo, callback?: () => void) => void;
   onDelete: (todoId: number) => void;
   selectedNavElement: SelectedNavElement;
 }
 
 const Main = ({
   todos,
-  onCreateProduct,
-  onUpdateProduct,
+  onCreateTodo,
+  onUpdateTodo,
   onDelete,
   selectedNavElement,
 }: MainProps) => {
@@ -35,7 +35,7 @@ const Main = ({
   }
 
   const handleCompleted = (todo: UpdateTodo, callback?: () => void) => {
-    onUpdateProduct({ id: todo.id, completed: todo.completed }, callback);
+    onUpdateTodo({ id: todo.id, completed: todo.completed }, callback);
   };
   return (
     <main>
@@ -67,8 +67,8 @@ const Main = ({
             isEditTodo={!!editTodoId}
             editTodo={editTodo}
             onCompleted={handleCompleted}
-            onCreateProduct={onCreateProduct}
-            onUpdateProduct={onUpdateProduct}
+            onCreateTodo={onCreateTodo}
+            onUpdateTodo={onUpdateTodo}
             onToggleModal={handleToggleModal}
           />
         </aside>

@@ -12,8 +12,8 @@ import { Month } from "../utils/utils";
 interface TodoFormProps {
   isEditTodo: boolean;
   editTodo: Todo | null;
-  onCreateProduct: (todo: NewTodo, callback: () => void) => void;
-  onUpdateProduct: (todo: UpdateTodo, callback: () => void) => void;
+  onCreateTodo: (todo: NewTodo, callback: () => void) => void;
+  onUpdateTodo: (todo: UpdateTodo, callback: () => void) => void;
   onCompleted: (todo: UpdateTodo, callback: () => void) => void;
   onToggleModal: () => void;
 }
@@ -29,8 +29,8 @@ interface FormState {
 const TodoForm = ({
   isEditTodo,
   editTodo,
-  onCreateProduct,
-  onUpdateProduct,
+  onCreateTodo,
+  onUpdateTodo,
   onCompleted,
   onToggleModal,
 }: TodoFormProps) => {
@@ -91,9 +91,9 @@ const TodoForm = ({
     };
 
     if (isEditTodo && editTodo) {
-      onUpdateProduct(todoData as UpdateTodo, onToggleModal);
+      onUpdateTodo(todoData as UpdateTodo, onToggleModal);
     } else {
-      onCreateProduct(todoData as NewTodo, onToggleModal);
+      onCreateTodo(todoData as NewTodo, onToggleModal);
     }
   };
   return (

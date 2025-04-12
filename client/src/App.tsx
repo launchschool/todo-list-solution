@@ -27,7 +27,7 @@ function App() {
     fetchTodos();
   }, []);
 
-  const handleCreateProduct = async (todo: NewTodo, callback?: () => void) => {
+  const handleCreateTodo = async (todo: NewTodo, callback?: () => void) => {
     const data = await createTodo(todo);
     setTodos((prevState) => prevState.concat(correctDate(data)));
     if (callback) {
@@ -35,10 +35,7 @@ function App() {
     }
   };
 
-  const handleUpdateProduct = async (
-    todo: UpdateTodo,
-    callback?: () => void
-  ) => {
+  const handleUpdateTodo = async (todo: UpdateTodo, callback?: () => void) => {
     const data = await updateTodo(todo);
     setTodos((prevState) => {
       return prevState.map((t) => {
@@ -72,8 +69,8 @@ function App() {
       />
       <Main
         todos={todos}
-        onCreateProduct={handleCreateProduct}
-        onUpdateProduct={handleUpdateProduct}
+        onCreateTodo={handleCreateTodo}
+        onUpdateTodo={handleUpdateTodo}
         onDelete={handleDelete}
         selectedNavElement={selectedNavElement}
       />
